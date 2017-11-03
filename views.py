@@ -30,6 +30,7 @@ class PartsView(generic.ListView):
         return Partnumber.objects. \
                    exclude(threaddesignation__isnull=True). \
                    values('name',
+                          'threaddesignation__pitch2threaddiameter__threaddiameter__measurementunit_id',
                           'threaddesignation__pitch2threaddiameter__threaddiameter__measurementunit__name',
                           'threaddesignation__pitch2threaddiameter__threaddiameter__name',
                           'threaddesignation__pitch2threaddiameter__pitch__name')[:25]

@@ -1,48 +1,140 @@
 {% load static %}
 <html>
 <head>
-<style>
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-th, td {
-    padding: 2px;
-    text-align: left;
-}
+<head>
+    <base href="http://demos.telerik.com/kendo-ui/dropdownlist/index">
+    <style>html { font-size: 14px; font-family: Arial, Helvetica, sans-serif; }</style>
+    <title></title>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.1026/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.1026/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.1026/styles/kendo.material.mobile.min.css" />
 
-</style>
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.3.1026/js/kendo.all.min.js"></script>
+
+
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.1026/styles/kendo.common.min.css">
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.1026/styles/kendo.rtl.min.css">
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.1026/styles/kendo.default.min.css">
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.3.1026/styles/kendo.mobile.all.min.css">
+<script src="https://kendo.cdn.telerik.com/2017.3.1026/js/angular.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2017.3.1026/js/jszip.min.js"></script>
 </head>
-<body>
+<style>
+table {
+  background-color: white;
+  width: 100%;
+}
 
-<table>
-  <tr>
-    <th>Units</th>
-    <th>Diameter</th>
-    <th>Pitch</th>
-    <th>Part</th>
-  </tr>
-{% for part in parts %}
-  <tr>
-    <td id="units">{{ part.threaddesignation__pitch2threaddiameter__threaddiameter__measurementunit__name }}</td>
-    <td id="diameter">{{ part.threaddesignation__pitch2threaddiameter__threaddiameter__name }}</td>
-    <td id="pitch">{{ part.threaddesignation__pitch2threaddiameter__pitch__name }}</td>
-    <td id="name">{{ part.name }}</td>
-  </tr>
-{% endfor %}
-</table>
-</body>
+tbody td {
+  background-color: white;
+}
+tbody td.odd {
+  background-color: #666;
+  color: white;
+}
+</style>
+
+
+</head>
+    <body>
+    <div id="example">
+    <div>
+        <h4><label for="unitselection">Units</label></h4>
+        <input id="unitselection" value="1" style="width: 20%;" onselect="unitFunction"/>
+    </div>
+
+    <table data-role="table" class="ui-responsive ui-shadow" id="parttable"
+           data-filter="true" data-input="#unitselection">
+        <thead>
+          <tr class="header">
+            <th>Units</th>
+            <th>Diameter</th>
+            <th>Pitch</th>
+            <th>Part</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for part in parts %}
+          <tr class="part">
+            <td class="{{ part.threaddesignation__pitch2threaddiameter__threaddiameter__measurementunit_id }}"
+                id="units">
+                {{ part.threaddesignation__pitch2threaddiameter__threaddiameter__measurementunit__name }}</td>
+            <td id="diameter">{{ part.threaddesignation__pitch2threaddiameter__threaddiameter__name }}</td>
+            <td id="pitch">{{ part.threaddesignation__pitch2threaddiameter__pitch__name }}</td>
+            <td id="name">{{ part.name }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+    $(document).ready(function() {
+        zebraRows('tbody tr:odd td', 'odd');
+    });
+
+    //used to apply alternating row styles
+    function zebraRows(selector, className)
+    {
+      $(selector).removeClass(className).addClass(className);
+    }
+
+    var unitUnique = [];
+    var unitDict = [];
+    $(document).ready(function() {
+
+        {% for part in parts %}
+            var unitid = {{ part.threaddesignation__pitch2threaddiameter__threaddiameter__measurementunit_id }};
+            var unitname = "{{ part.threaddesignation__pitch2threaddiameter__threaddiameter__measurementunit__name }}";
+            if ($.inArray(unitid, unitUnique) === -1) {
+                unitDict.push({text: unitname, value: unitid});
+                unitUnique.push(unitid);
+            };
+        {% endfor %}
+
+        // create DropDownList from input HTML element
+        $("#unitselection").kendoDropDownList({
+            dataTextField: "text",
+            dataValueField: "value",
+            dataSource: unitDict,
+            index: 0,
+            <!--change: onChange-->
+        });
+
+        // create DropDownList from select HTML element
+        <!--$("#size").kendoDropDownList();-->
+
+        <!--var unit = $("#unitselection").data("kendoDropDownList");-->
+
+        <!--unit.select(0);-->
+
+        <!--//filter results based on query-->
+        <!--function filter(selector, query) {-->
+          <!--query =   $.trim(query); //trim white space-->
+          <!--query = query.replace(/ /gi, '|'); //add OR for regex query-->
+
+          <!--$(selector).each(function() {-->
+            <!--($(this).text().search(new RegExp(query, "i")) < 0) ? $(this).hide().removeClass('visible') : $(this).show().addClass('visible');-->
+          <!--});-->
+        <!--}-->
+
+    });
+
+    <!--var size = $("#size").data("kendoDropDownList");-->
+
+    <!--$.each( unitDict, function( key, value ) {-->
+        <!--$("<option id=" + key + ">" + value + "</option>").appendTo($("#unitselection"));-->
+    <!--});-->
+
+
+    </script>
+    </div>
+        <script>
+
+
+
+        </script>
+
+    </body>
 </html>
 
-<!--<ul>-->
-<!--<form method="POST">{% csrf_token %}-->
-    <!--<select name="measurementunitid">-->
-    <!--{% for part in parts %}-->
-        <!--<option >{{ part.name }}</option>-->
-    <!--{% endfor %}-->
-    <!--</select>-->
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>-->
-    <!--<script>-->
-    <!--</script>-->
-<!--</form>-->
-<!--</ul>-->
